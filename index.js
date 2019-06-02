@@ -16,9 +16,12 @@ for (var i = 0; i < tree.length; i++) {
 }
 
 const data = {
-    one: "one",
-    two: "two",
-    three: [1, 2, 3]
+    arrayOne: [1, 2, 3, 4, 5],
+    innerObject: {
+        firstInnerObjectKey: 1, 
+        secondInnerOBjectKey: 2, 
+        thirdInnerObjectArray: [1,2,3,4]
+    }
 };
 
 
@@ -32,15 +35,28 @@ function isObject(value) {
 }
 
 const object = {
-
+    iterator: 0
 };
 
 function treeBuilder( data, object, isArray, isObject, path ) {
     // - is object or array
     if( isArray(data) ) {
-        alert('array')
+        console.log(data[0]);
+        treeBuilder(data[0], object, isArray, isObject, path);
     } else if ( isObject(data) ) {
-        alert('object');
+        Object.keys( data ).map((key)=>{
+            treeBuilder(data[key], object, isArray, isObject, path);
+            console.log(key);
+            // if( isObject(data[key] ) ) {
+            //     console.log(key);
+            //     treeBuilder(data[key], object, isArray, isObject, path);
+            // } else if ( isArray(data[key]) ) {
+            //     console.log(key);
+            //     treeBuilder(data[0], object, isArray, isObject, path);
+            // } else {
+
+            // }
+        });
     }
 }
 
