@@ -7,19 +7,23 @@
     <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-    <ul class="tree">
+    <!-- <ul class="tree">
         <li><a href="#">Part 1</a>
             <ul>
                 <li><a href="#">Item A</a>
                     <ul>
-                        <li><a href="#">Sub-item 1</a>
+                        <li><a href="#">Array (length 6)</a>
                             <ul>
                                 <li><a href="#">Sub-item 1</a></li>
-                                <li><a href="#">Sub-item 2</a></li>
-                                <li><a href="#">Sub-item 3</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Sub-item 2</a></li>
+                        <li><a href="#">Object</a>
+                            <ul>
+                                <li><button>Select</button> </button><a href="#">Primitive Key: value</a></li>
+                                <li><a href="#">Primitive Key: value</a></li>
+                                <li><a href="#">Primitive Key: value</a></li>
+                            </ul>
+                        </li>
                         <li><a href="#">Sub-item 3</a></li>
                     </ul>
                 </li>
@@ -133,10 +137,44 @@
                 </li>
             </ul>
         </li>
-    </ul>
+    </ul> -->
+
+    <!-- <ul class="tree">
+        <li data-tree-path="data">
+        <li><a href="#">arrayOne</a>
+            <ul data-tree-path="data.arrayOne">
+                <li data-tree-path="data.arrayOne.data[0]"><button>Select</button>Array (Len: 5, First Value: 1)</li>
+            </ul>
+        </li>
+    
+        <li><a href="#">innerObject</a>
+            <ul data-tree-path="data.innerObject">
+    
+                <li><a href="#">firstInnerObjectKey</a>
+                    <ul data-tree-path="data.innerObject.firstInnerObjectKey">
+                    </ul>
+                </li>
+    
+                <li><a href="#">secondInnerOBjectKey</a>
+                    <ul data-tree-path="data.innerObject.secondInnerOBjectKey">
+                    </ul>
+                </li>
+    
+                <li><a href="#">thirdInnerObjectArray</a>
+                    <ul data-tree-path="data.innerObject.thirdInnerObjectArray">
+                        <li data-tree-path="data.innerObject.thirdInnerObjectArray.data[0]"><button>Select</button>Array
+                            (Len: 4, First Value: 1)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        </li>
+    </ul> -->
     
     <script src="./jquery.js"></script>
     <script src="./index.js"></script>
+
+    
     
 
 </body>
