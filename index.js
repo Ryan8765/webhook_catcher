@@ -18,12 +18,55 @@ $(document).ready(function(){
         });
     }
 
+    // const data = {
+    //     arrayOne: [1, 2, 3, 4, 5],
+    //     innerObject: {
+    //         firstInnerObjectKey: 1,
+    //         secondInnerOBjectKey: 2,
+    //         thirdInnerObjectArray: [1, 2, 3, 4]
+    //     },
+    //     arrayOfObjects: [
+    //         {
+    //             firstValue: 1,
+    //             secondValue: 2,
+    //             thirdValue: 3
+    //         }
+    //     ]
+    // };
+
     const data = {
-        arrayOne: [1, 2, 3, 4, 5],
-        innerObject: {
-            firstInnerObjectKey: 1,
-            secondInnerOBjectKey: 2,
-            thirdInnerObjectArray: [1, 2, 3, 4]
+        glossary: {
+            title: [1, 2, 3, 4],
+            title2: [
+                {
+                    first: {
+                        subfirst: 1,
+                        subSecond: 2
+                    }
+                },
+                {
+                    first: {
+                        subfirst: 1,
+                        subSecond: 2
+                    }
+                }],
+            GlossDiv: {
+                title: "S",
+                GlossList: {
+                    GlossEntry: {
+                        ID: "SGML",
+                        SortAs: "SGML",
+                        GlossTerm: "Standard Generalized Markup Language",
+                        Acronym: "SGML",
+                        Abbrev: "ISO 8879:1986",
+                        GlossDef: {
+                            para: "A meta-markup language, used to create markup languages such as DocBook.",
+                            "GlossSeeAlso": ["GML", "XML"]
+                        },
+                        GlossSee: "markup"
+                    }
+                }
+            }
         }
     };
 
@@ -55,7 +98,7 @@ $(document).ready(function(){
         //not an array of ojects, but an array of primitives.
         pureArrayNode: function( array, path ) {
             var length = array.length; 
-            return `<li data-tree-path="${path}"><button>Select</button>Array (Len: ${length}, First Value: ${array[0]})</li>`;
+            return `<li data-tree-path="${path}"><button>Select</button>  Array (Len: ${length}, First Value: ${array[0]})</li>`;
         }, 
         objectNode: function(key, path) {
             return `
@@ -66,20 +109,37 @@ $(document).ready(function(){
             `;
         },
         primitiveNode: function( value, path ) {
-            return `<li data-tree-path="${path}"><button>Select</button>${value}</li>`;
+            return `<li data-tree-path="${path}"><button>Select</button>  ${value}</li>`;
         }
     }
 
-
+    /**
+     * 
+     * @param {Object/Array} data - data from post request 
+     * @param {Object} object - iterator object 
+     * @param {function} isArray - function to determine if value is array 
+     * @param {function} isObject - function to determine if value is object
+     * @param {string} path - path to object of interest 
+     */
     function treeBuilder(data, object, isArray, isObject, path = 'data') {
         var $selector = $tree.find(`[data-tree-path='${path}']`);
         // - is object or array
         if (isArray(data)) {
-            const length = data.length;
-            path += ".data[0]";
-            var $element = view.pureArrayNode( data, path );
-            $selector.append($element);
-            
+            if( isObject(data[0]) ) {
+                Object.keys(data[0]).map((key) => {
+                    newPath = path + '[0]' + `.${key}`;
+                    var $element = view.objectNode(key, newPath);
+                    $selector.append($element);
+                    // $tree.find('.ryan').append(`<li><a href="#">${key}</a><span></span></li>`);
+                    treeBuilder(data[0][key], object, isArray, isObject, newPath);
+                });
+                treeBuilder(data[0], object, isArray, isObject, newPath);
+            } else {
+                path += "[0]";
+                const length = data.length;
+                var $element = view.pureArrayNode(data, path);
+                $selector.append($element);
+            }
             // treeBuilder(data[0], object, isArray, isObject, path);
         } else if (isObject(data)) {
             Object.keys(data).map((key) => {
