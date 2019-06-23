@@ -1,38 +1,26 @@
 $(document).ready(function(){
 
-
-    var tree = document.querySelectorAll('ul.tree a:not(:last-child)');
-    for (var i = 0; i < tree.length; i++) {
-        tree[i].addEventListener('click', function (e) {
-            var parent = e.target.parentElement;
-            var classList = parent.classList;
-            if (classList.contains("open")) {
-                classList.remove('open');
-                var opensubs = parent.querySelectorAll(':scope .open');
-                for (var i = 0; i < opensubs.length; i++) {
-                    opensubs[i].classList.remove('open');
+    /**
+     * 
+     * @param {Array of Objects} treeSelector - select all tree elements and initialize onclick handlers
+     */
+    function initializeTree ( treeSelector ) {
+        for (var i = 0; i < tree.length; i++) {
+            tree[i].addEventListener('click', function (e) {
+                var parent = e.target.parentElement;
+                var classList = parent.classList;
+                if (classList.contains("open")) {
+                    classList.remove('open');
+                    var opensubs = parent.querySelectorAll(':scope .open');
+                    for (var i = 0; i < opensubs.length; i++) {
+                        opensubs[i].classList.remove('open');
+                    }
+                } else {
+                    classList.add('open');
                 }
-            } else {
-                classList.add('open');
-            }
-        });
+            });
+        }
     }
-
-    // const data = {
-    //     arrayOne: [1, 2, 3, 4, 5],
-    //     innerObject: {
-    //         firstInnerObjectKey: 1,
-    //         secondInnerOBjectKey: 2,
-    //         thirdInnerObjectArray: [1, 2, 3, 4]
-    //     },
-    //     arrayOfObjects: [
-    //         {
-    //             firstValue: 1,
-    //             secondValue: 2,
-    //             thirdValue: 3
-    //         }
-    //     ]
-    // };
 
     const data = {
         glossary: {
@@ -78,27 +66,15 @@ $(document).ready(function(){
 
     function isObject(value) {
         return value && typeof value === 'object' && value.constructor === Object;
-    }
+    }   
 
-    const object = {
-        iterator: 0
-    };
-
-    var $tree = $('<ul class="tree"><li data-tree-path="data"></li></ul>');
-
-    var path = [
-        {
-            name: "something",
-            path: "somePath",
-
-        }
-    ];
+    
 
     var view = {
         //not an array of ojects, but an array of primitives.
         pureArrayNode: function( array, path ) {
             var length = array.length; 
-            return `<li data-tree-path="${path}"><button>Select</button>  Array (Len: ${length}, First Value: ${array[0]})</li>`;
+            return `<li data-tree-path="${path}"><button class='btn btn-primary btn-sm'>Select</button>  ${array[0]} (Array - Len: ${length})</li>`;
         }, 
         objectNode: function(key, path) {
             return `
@@ -109,9 +85,15 @@ $(document).ready(function(){
             `;
         },
         primitiveNode: function( value, path ) {
-            return `<li data-tree-path="${path}"><button>Select</button>  ${value}</li>`;
+            return `<li data-tree-path="${path}"><button class='btn btn-primary btn-sm'>Select</button>  ${value}</li>`;
+        },
+
+        initalizedTreeNode: function() {
+            return $('<ul class="tree"><li data-tree-path="data"></li></ul>');
         }
     }
+
+    
 
     /**
      * 
@@ -121,8 +103,8 @@ $(document).ready(function(){
      * @param {function} isObject - function to determine if value is object
      * @param {string} path - path to object of interest 
      */
-    function treeBuilder(data, object, isArray, isObject, path = 'data') {
-        var $selector = $tree.find(`[data-tree-path='${path}']`);
+    function treeBuilder(data, isArray, isObject, path = 'data', $treeInstance) {
+        var $selector = $treeInstance.find(`[data-tree-path='${path}']`);
         // - is object or array
         if (isArray(data)) {
             if( isObject(data[0]) ) {
@@ -131,9 +113,9 @@ $(document).ready(function(){
                     var $element = view.objectNode(key, newPath);
                     $selector.append($element);
                     // $tree.find('.ryan').append(`<li><a href="#">${key}</a><span></span></li>`);
-                    treeBuilder(data[0][key], object, isArray, isObject, newPath);
+                    treeBuilder(data[0][key], isArray, isObject, newPath, $treeInstance);
                 });
-                treeBuilder(data[0], object, isArray, isObject, newPath);
+                // treeBuilder(data[0], object, isArray, isObject, newPath);
             } else {
                 path += "[0]";
                 const length = data.length;
@@ -147,7 +129,7 @@ $(document).ready(function(){
                     var $element = view.objectNode(key, newPath);
                     $selector.append($element);
                     // $tree.find('.ryan').append(`<li><a href="#">${key}</a><span></span></li>`);
-                    treeBuilder(data[key], object, isArray, isObject, newPath);
+                    treeBuilder(data[key], isArray, isObject, newPath, $treeInstance);
             });
         } else {
             var $element = view.primitiveNode( data, path );
@@ -155,34 +137,75 @@ $(document).ready(function(){
         }
     }
 
-    treeBuilder(data, object, isArray, isObject);
-
-    $("body").append($tree);
+    
 
 
 
 
-
-
-
-
-
-    var tree = document.querySelectorAll('ul.tree a:not(:last-child)');
-    for (var i = 0; i < tree.length; i++) {
-        tree[i].addEventListener('click', function (e) {
-            var parent = e.target.parentElement;
-            var classList = parent.classList;
-            if (classList.contains("open")) {
-                classList.remove('open');
-                var opensubs = parent.querySelectorAll(':scope .open');
-                for (var i = 0; i < opensubs.length; i++) {
-                    opensubs[i].classList.remove('open');
+    /**
+     * 
+     * @param {Array of Objects} treeSelector - select all tree elements
+     */
+    function initializeTree(treeElements) {
+        for (var i = 0; i < treeElements.length; i++) {
+            treeElements[i].addEventListener('click', function (e) {
+                var parent = e.target.parentElement;
+                var classList = parent.classList;
+                if (classList.contains("open")) {
+                    classList.remove('open');
+                    var opensubs = parent.querySelectorAll(':scope .open');
+                    for (var i = 0; i < opensubs.length; i++) {
+                        opensubs[i].classList.remove('open');
+                    }
+                } else {
+                    classList.add('open');
                 }
-            } else {
-                classList.add('open');
-            }
-        });
+            });
+        }
     }
+
+    /**
+     * Runs main page load content.
+     */
+    function main() {
+        //iniitalize new tree instance.
+        var $treeInstance = view.initalizedTreeNode();
+        treeBuilder(data, isArray, isObject, 'data', $treeInstance);
+
+        //append treeinstance to dom
+        $("body").append($treeInstance);
+
+        //initialize all click events for tree nodes
+        var $treeElements = document.querySelectorAll('ul.tree a:not(:last-child)');
+        initializeTree($treeElements);
+    }
+
+
+    main();
+
+    
+
+
+
+
+
+
+    // var tree = document.querySelectorAll('ul.tree a:not(:last-child)');
+    // for (var i = 0; i < tree.length; i++) {
+    //     tree[i].addEventListener('click', function (e) {
+    //         var parent = e.target.parentElement;
+    //         var classList = parent.classList;
+    //         if (classList.contains("open")) {
+    //             classList.remove('open');
+    //             var opensubs = parent.querySelectorAll(':scope .open');
+    //             for (var i = 0; i < opensubs.length; i++) {
+    //                 opensubs[i].classList.remove('open');
+    //             }
+    //         } else {
+    //             classList.add('open');
+    //         }
+    //     });
+    // }
 
 
 });
