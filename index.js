@@ -1,26 +1,6 @@
 $(document).ready(function(){
 
-    /**
-     * 
-     * @param {Array of Objects} treeSelector - select all tree elements and initialize onclick handlers
-     */
-    function initializeTree ( treeSelector ) {
-        for (var i = 0; i < tree.length; i++) {
-            tree[i].addEventListener('click', function (e) {
-                var parent = e.target.parentElement;
-                var classList = parent.classList;
-                if (classList.contains("open")) {
-                    classList.remove('open');
-                    var opensubs = parent.querySelectorAll(':scope .open');
-                    for (var i = 0; i < opensubs.length; i++) {
-                        opensubs[i].classList.remove('open');
-                    }
-                } else {
-                    classList.add('open');
-                }
-            });
-        }
-    }
+    
 
     const data = {
         glossary: {
@@ -84,6 +64,14 @@ $(document).ready(function(){
                 </li>
             `;
         },
+        arrayOfObjectsNode: function (key, path, length) {
+            return `
+                <li><a href="#">${ key} (Array - Len: ${length})</a>
+                    <ul data-tree-path="${path}">
+                    </ul>
+                </li>
+            `;
+        },
         primitiveNode: function( value, path ) {
             return `<li data-tree-path="${path}"><button class='btn btn-primary btn-sm'>Select</button>  ${value}</li>`;
         },
@@ -110,7 +98,7 @@ $(document).ready(function(){
             if( isObject(data[0]) ) {
                 Object.keys(data[0]).map((key) => {
                     newPath = path + '[0]' + `.${key}`;
-                    var $element = view.objectNode(key, newPath);
+                    var $element = view.arrayOfObjectsNode(key, newPath, data.length);
                     $selector.append($element);
                     // $tree.find('.ryan').append(`<li><a href="#">${key}</a><span></span></li>`);
                     treeBuilder(data[0][key], isArray, isObject, newPath, $treeInstance);
